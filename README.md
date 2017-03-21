@@ -1,8 +1,8 @@
-#snaplet-aws
+# snaplet-aws
 A boilerplate [snaplet](https://github.com/snapframework/snap) to conveniently allow [amazonka](https://github.com/brendanhay/amazonka)
 [aws](https://aws.amazon.com/) functions to be lifted into snap web handlers.
 
-##Usage
+## Usage
 1. Add the `AWSEnv` to your app's core state:
 
   ```haskell
