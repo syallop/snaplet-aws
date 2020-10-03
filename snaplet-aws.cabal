@@ -13,7 +13,7 @@ build-type:          Simple
 extra-source-files:  LICENSE
                    , README.md
 
-cabal-version:       >=1.10
+cabal-version:       >=1.2
 
 library
   exposed-modules:   Snap.Snaplet.AWS
@@ -21,6 +21,7 @@ library
   build-depends:     base
                    , amazonka
                    , configurator
+                   , unliftio-core
                    , exceptions
                    , lens
                    , mtl

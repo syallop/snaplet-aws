@@ -17,13 +17,13 @@ To use this module:
 
 1. Add the AWSEnv to your app's core state:
 
- @
-   data App = App
-   {...
-   ,_awsEnv :: Snaplet AWSEnv
-   ,...
-   }
- @
+@
+  data App = App
+    {...
+    ,_awsEnv :: Snaplet AWSEnv
+    ,...
+    }
+@
 
 2. Derive (or manually create) lenses:
 
@@ -88,6 +88,7 @@ module Snap.Snaplet.AWS
 import Control.Lens
 import Control.Monad.Catch (MonadCatch(..))
 import Control.Monad.State
+import Control.Monad.IO.Unlift (MonadUnliftIO(..))
 import Network.AWS
 import Snap.Snaplet
 
@@ -112,13 +113,13 @@ instance HasEnv (Snaplet AWSEnv) where
 -- | If a 'Handler' has a 'MonadCatch' instance and 'v' is an instance of
 -- 'HasEnv' (Is 'Snaplet AWSEnv'/'AWSEnv'/...), then aws functions can
 -- be lifted with 'liftAWS'.
-instance (MonadCatch (Handler b v),HasEnv v) => MonadAWS (Handler b v) where
+instance (MonadCatch (Handler b v), MonadUnliftIO (Handler b v), HasEnv v) => MonadAWS (Handler b v) where
   liftAWS aws = do
     env <- view (snapletValue . environment) <$> getSnapletState
     runResourceT $ runAWS env aws
 
 -- | Initialise an 'AWSEnv' Snaplet by specifying how to find 'Credentials'.
-awsEnvInit:: Credentials -> SnapletInit b AWSEnv
+awsEnvInit :: Credentials -> SnapletInit b AWSEnv
 awsEnvInit credentials = makeSnaplet "aws-env" "AWS snaplet using amazonka." Nothing $ do
   env <- liftIO $ newEnv credentials
   return $ AWSEnv env
